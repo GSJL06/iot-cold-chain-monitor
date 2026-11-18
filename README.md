@@ -4,7 +4,7 @@ Plataforma IoT de monitoreo con alertas y analítica, portafolio.
 
 ## Estado
 
-Fase 1 completada: diseño y contratos. Código en desarrollo.
+Fases 1 y 2 completadas: diseño, contratos y stack. Código en desarrollo.
 
 ## Problema
 
@@ -62,9 +62,12 @@ Próximamente (Fase 4).
 ## Documentación
 
 - [Arquitectura](docs/architecture.md)
+- [Stack tecnológico](docs/stack.md)
+- [Versiones fijadas](docs/versions.md)
 - [Contrato MQTT](docs/mqtt-contract.md)
 - [Reglas de alertas](docs/alert-rules.md)
 - [ADR 0001 — Arquitectura base](docs/adr/0001-arquitectura-base.md)
+- [ADR 0002 — Stack tecnológico](docs/adr/0002-stack-tecnologico.md)
 
 ## Aviso
 
