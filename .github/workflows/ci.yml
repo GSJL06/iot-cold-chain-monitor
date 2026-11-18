@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'schedule'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Check code with Ruff
+        run: ruff check .
+
+      - name: Check formatting with Ruff
+        run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'schedule'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests with coverage
+        run: pytest -m "not integration" --cov --cov-report=term-missing
+
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install pip-audit and scan requirements
+        run: |
+          pip install pip-audit
+          EXIT_CODE=0
+          for req in requirements-dev.txt services/*/requirements.txt; do
+            if [ -f "$req" ]; then
+              echo "Auditing $req..."
+              pip-audit -r "$req" || EXIT_CODE=$?
+            fi
+          done
+          exit $EXIT_CODE
