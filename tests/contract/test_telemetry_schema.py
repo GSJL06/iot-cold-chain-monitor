@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
-import pytest
+
 import jsonschema
+import pytest
 from jsonschema import Draft202012Validator
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent

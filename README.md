@@ -1,5 +1,7 @@
 # ColdChain Monitor
 
+[![CI](https://github.com/GSJL06/iot-cold-chain-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/GSJL06/iot-cold-chain-monitor/actions/workflows/ci.yml)
+
 Plataforma IoT de monitoreo con alertas y analítica, portafolio.
 
 ## Estado
@@ -66,6 +68,8 @@ Próximamente (Fase 4).
 - [Versiones fijadas](docs/versions.md)
 - [Contrato MQTT](docs/mqtt-contract.md)
 - [Reglas de alertas](docs/alert-rules.md)
+- [Prácticas de ingeniería](docs/engineering-practices.md)
+- [Modelo de amenazas](docs/threat-model.md)
 - [ADR 0001 — Arquitectura base](docs/adr/0001-arquitectura-base.md)
 - [ADR 0002 — Stack tecnológico](docs/adr/0002-stack-tecnologico.md)
 
