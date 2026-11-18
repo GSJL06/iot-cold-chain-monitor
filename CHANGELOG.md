@@ -7,7 +7,10 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+- Fase 4A: infraestructura base (Mosquitto con ACL, TimescaleDB con esquema, roles y flota sintética), plan MVP y verificador del broker.
+
 ### Added
+
 - **Fase 3 — Prácticas de ingeniería, CI y seguridad**:
   - Configuración de Ruff (`ruff.toml`) para linting y formateo con reglas `E`, `F`, `I`, `B`, `UP` y `S`.
   - Configuración de pre-commit (`.pre-commit-config.yaml`) con hooks de calidad, formato y validación de mensajes de commit mediante `pygrep`.

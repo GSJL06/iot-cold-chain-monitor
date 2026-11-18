@@ -1,9 +1,9 @@
 # ADR 0004 — Plan del MVP por fases y decisiones técnicas de la Fase 4
 
-| | |
-|---|---|
-| Estado | Aceptada, con una condición abierta (ver "Verificación pendiente") |
-| Fecha | 2026-11-18 |
+|             |                                                  |
+| ----------- | ------------------------------------------------ |
+| Estado      | Aceptada.                                        |
+| Fecha       | 2026-11-18                                       |
 | Relacionada | ADR 0001, ADR 0002, ADR 0003, `docs/mvp-plan.md` |
 
 ## Contexto
@@ -20,7 +20,7 @@ Quedan por construir cinco servicios y su integración en 4–6 semanas a 8–10
 
 ## Verificación pendiente
 
-La suscripción compartida `$share/ingestor/...` con Mosquitto 2.0.23 y ACL se comprueba en 4A. Resultado: _pendiente_.
+La suscripción compartida `$share/ingestor/...` con Mosquitto 2.0.23 y ACL se comprueba en 4A. Resultado: verificado el 2026-11-18. Mosquitto 2.0.23 acepta $share con la ACL del repositorio (20 de 20 mensajes repartidos 10/10; ver docs/evidence/4a-verify-broker.txt). Se mantiene el contrato MQTT v1.
 
 - Si pasa: se mantiene el contrato MQTT v1 tal como está.
 - Si falla: plan B, un único ingestor con suscripción normal. Se actualizan `docs/mqtt-contract.md` (sección 2) y esta ADR.
@@ -41,9 +41,9 @@ La suscripción compartida `$share/ingestor/...` con Mosquitto 2.0.23 y ACL se c
 
 ## Alternativas descartadas
 
-| Alternativa | Motivo |
-|---|---|
-| Construir todos los servicios y medir al final | Los problemas de integración aparecen tarde y sin evidencia intermedia |
-| Un único servicio monolítico | No demuestra arquitectura de microservicios ni la separación de privilegios |
-| Kafka en lugar de MQTT | Excesivo para 12 dispositivos; el dominio IoT usa MQTT |
-| Rol de API de solo lectura y ACK mediante otro servicio | Un servicio más sin beneficio de seguridad real en esta escala |
+| Alternativa                                             | Motivo                                                                      |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Construir todos los servicios y medir al final          | Los problemas de integración aparecen tarde y sin evidencia intermedia      |
+| Un único servicio monolítico                            | No demuestra arquitectura de microservicios ni la separación de privilegios |
+| Kafka en lugar de MQTT                                  | Excesivo para 12 dispositivos; el dominio IoT usa MQTT                      |
+| Rol de API de solo lectura y ACK mediante otro servicio | Un servicio más sin beneficio de seguridad real en esta escala              |
