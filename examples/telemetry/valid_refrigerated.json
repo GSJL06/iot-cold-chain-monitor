@@ -1,0 +1,12 @@
+{
+  "schema": "telemetry.v1",
+  "device_id": "SIM-HA-001",
+  "ts": "2026-11-18T12:00:00Z",
+  "seq": 1042,
+  "temp_c": 4.7,
+  "humidity_pct": 52.1,
+  "rssi_dbm": -87,
+  "battery_pct": 100,
+  "on_backup_power": false,
+  "fw": "sim-1.0.0"
+}

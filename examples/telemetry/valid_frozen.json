@@ -1,0 +1,12 @@
+{
+  "schema": "telemetry.v1",
+  "device_id": "SIM-FB-001",
+  "ts": "2026-11-18T12:00:00Z",
+  "seq": 2210,
+  "temp_c": -19.8,
+  "humidity_pct": 38.0,
+  "rssi_dbm": -92,
+  "battery_pct": 98.5,
+  "on_backup_power": false,
+  "fw": "sim-1.0.0"
+}

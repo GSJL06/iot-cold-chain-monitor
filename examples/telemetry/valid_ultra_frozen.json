@@ -1,0 +1,10 @@
+{
+  "schema": "telemetry.v1",
+  "device_id": "SIM-LC-001",
+  "ts": "2026-11-18T12:00:00.250Z",
+  "seq": 87,
+  "temp_c": -80.4,
+  "rssi_dbm": -74,
+  "battery_pct": 71,
+  "on_backup_power": true
+}

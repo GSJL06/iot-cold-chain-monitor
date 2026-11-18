@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GSJL06/iot-cold-chain-monitor/schemas/telemetry.v1.schema.json",
+  "title": "telemetry.v1",
+  "description": "Lectura periódica de un nodo de monitoreo de cadena de frío. Contrato estricto: cualquier campo nuevo requiere telemetry.v2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "device_id",
+    "ts",
+    "seq",
+    "temp_c",
+    "rssi_dbm",
+    "battery_pct",
+    "on_backup_power"
+  ],
+  "properties": {
+    "schema": { "const": "telemetry.v1" },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9-]{3,31}$"
+    },
+    "ts": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+    },
+    "seq": { "type": "integer", "minimum": 0 },
+    "temp_c": { "type": "number", "minimum": -100, "maximum": 60 },
+    "humidity_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+    "rssi_dbm": { "type": "integer", "minimum": -140, "maximum": 0 },
+    "battery_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+    "on_backup_power": { "type": "boolean" },
+    "fw": { "type": "string", "maxLength": 32 }
+  }
+}
