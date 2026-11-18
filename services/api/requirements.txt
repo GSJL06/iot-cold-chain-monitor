@@ -1,0 +1,4 @@
+# Versiones fijadas el 2026-11-18 (Python 3.12)
+fastapi==0.164.0
+uvicorn[standard]==0.54.0
+psycopg[binary,pool]==3.3.9

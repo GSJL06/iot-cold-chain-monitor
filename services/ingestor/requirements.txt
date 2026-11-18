@@ -1,0 +1,4 @@
+# Versiones fijadas el 2026-11-18 (Python 3.12)
+paho-mqtt==2.2.0
+jsonschema==4.26.0
+psycopg[binary,pool]==3.3.9
