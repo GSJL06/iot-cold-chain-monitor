@@ -1,0 +1,17 @@
+# ACL de Mosquitto — ColdChain Monitor
+# Regla general: el usuario de un dispositivo es su device_id (%u) y solo puede
+# publicar en SU topic. Contrato: docs/mqtt-contract.md, sección 2.
+
+# --- Dispositivos (aplica a cualquier usuario con nombre = device_id) ---
+pattern write coldchain/v1/+/%u/telemetry
+pattern write coldchain/v1/+/%u/status
+
+# --- Ingestor: solo lectura de telemetría y estado ---
+user ingestor
+topic read coldchain/v1/+/+/telemetry
+topic read coldchain/v1/+/+/status
+# Suscripción compartida. Según la versión, el broker evalúa la ACL con o sin
+# el prefijo $share/<grupo>/; se declaran ambas formas. scripts/verify_broker.py lo comprueba.
+topic read $share/ingestor/coldchain/v1/+/+/telemetry
+# Healthcheck de Docker.
+topic read $SYS/broker/uptime
