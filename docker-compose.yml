@@ -1,0 +1,61 @@
+name: coldchain
+
+# ==============================================================================
+# Seguridad de red y exposición de puertos (docs/engineering-practices.md 5.1):
+# Los puertos (5432 y 1883) se publican exclusivamente en la interfaz 127.0.0.1
+# (localhost) para mitigar amenazas de acceso no autorizado externo (amenazas 1, 5
+# en docs/threat-model.md). Esto asegura que la base de datos y el broker MQTT
+# no queden expuestos a interfaces de red públicas ni a la red local anfitriona.
+# ==============================================================================
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:2.32.0-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?falta POSTGRES_DB en .env}
+      POSTGRES_USER: ${POSTGRES_USER:?falta POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en .env}
+      INGESTOR_DB_PASSWORD: ${INGESTOR_DB_PASSWORD:?falta INGESTOR_DB_PASSWORD en .env}
+      ALERT_ENGINE_DB_PASSWORD: ${ALERT_ENGINE_DB_PASSWORD:?falta ALERT_ENGINE_DB_PASSWORD en .env}
+      API_DB_PASSWORD: ${API_DB_PASSWORD:?falta API_DB_PASSWORD en .env}
+      ANALYTICS_DB_PASSWORD: ${ANALYTICS_DB_PASSWORD:?falta ANALYTICS_DB_PASSWORD en .env}
+      GRAFANA_RO_DB_PASSWORD: ${GRAFANA_RO_DB_PASSWORD:?falta GRAFANA_RO_DB_PASSWORD en .env}
+    volumes:
+      - tsdata:/var/lib/postgresql/data
+      - ./infra/timescaledb/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.23
+    restart: unless-stopped
+    environment:
+      MQTT_INGESTOR_PASSWORD: ${MQTT_INGESTOR_PASSWORD:?falta MQTT_INGESTOR_PASSWORD en .env}
+    volumes:
+      - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./infra/mosquitto/acl:/mosquitto/config/acl:ro
+      - ./infra/mosquitto/passwd:/mosquitto/config/passwd:ro
+      - mosquitto_data:/mosquitto/data
+    ports:
+      - "127.0.0.1:1883:1883"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mosquitto_sub -h localhost -p 1883 -u ingestor -P \"$${MQTT_INGESTOR_PASSWORD}\" -t '$$SYS/broker/uptime' -C 1 -W 5",
+        ]
+      interval: 10s
+      timeout: 8s
+      retries: 6
+      start_period: 10s
+
+volumes:
+  tsdata:
+  mosquitto_data:
