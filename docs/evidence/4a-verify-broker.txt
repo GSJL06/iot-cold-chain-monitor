@@ -1,0 +1,7 @@
+PASS C1: Conexión anónima rechazada
+PASS C2: Conexión autenticada de SIM-HA-001 correcta
+PASS C3: Suscripción compartida: 20/20 mensajes recibidos (verify-ing-1: 10, verify-ing-2: 10)
+PASS C4: Aislamiento por ACL (observador no recibió nada en 3 s)
+PASS C5: Límite de tamaño respetado (payload de 5000 bytes no recibido en 3 s)
+PASS C6: Ingestor no puede publicar (observador no recibió nada en 3 s)
+6/6 PASS
