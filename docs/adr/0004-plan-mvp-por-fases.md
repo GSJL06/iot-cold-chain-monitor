@@ -18,12 +18,12 @@ Quedan por construir cinco servicios y su integración en 4–6 semanas a 8–10
 4. **API de compresión de TimescaleDB** (`timescaledb.compress` y `add_compression_policy`) en un archivo de inicialización aislado, para poder sustituirla por la API de columnstore sin tocar el esquema.
 5. **LF forzado** en `infra/`, `*.sh` y `*.sql` mediante `.gitattributes`.
 
-## Verificación pendiente
+## Verificación de `$share` (resuelta en 4A)
 
 La suscripción compartida `$share/ingestor/...` con Mosquitto 2.0.23 y ACL se comprueba en 4A. Resultado: verificado el 2026-11-18. Mosquitto 2.0.23 acepta $share con la ACL del repositorio (20 de 20 mensajes repartidos 10/10; ver docs/evidence/4a-verify-broker.txt). Se mantiene el contrato MQTT v1.
 
-- Si pasa: se mantiene el contrato MQTT v1 tal como está.
-- Si falla: plan B, un único ingestor con suscripción normal. Se actualizan `docs/mqtt-contract.md` (sección 2) y esta ADR.
+- Resultado: se mantiene el contrato MQTT v1 tal como está.
+- Plan B (un único ingestor con suscripción normal): no fue necesario.
 
 ## Consecuencias
 
@@ -36,7 +36,7 @@ La suscripción compartida `$share/ingestor/...` con Mosquitto 2.0.23 y ACL se c
 **En contra**
 
 - Más PR pequeños: más fricción por fase.
-- La verificación de `$share` puede forzar un cambio de contrato.
+- El reparto con `$share` se verificó con tráfico mínimo; la 4C lo confirma con el ingestor real.
 - Con un solo desarrollador, la estimación de 44 h tiene incertidumbre; se reevalúa al cerrar 4B.
 
 ## Alternativas descartadas
