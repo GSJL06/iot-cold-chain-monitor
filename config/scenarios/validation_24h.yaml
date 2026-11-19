@@ -1,0 +1,28 @@
+# Escenario de validación (docs/alert-rules.md, sección 5; objetivo 5 de docs/architecture.md):
+# 24 h simuladas, semilla fija, 12 dispositivos, 10 fallos reales y 30 aperturas de puerta benignas.
+# Los minutos son relativos al inicio de la simulación.
+version: 1
+name: validation_24h
+seed: 42
+duration_min: 1440
+
+faults:
+  - {scenario: door_left_open,     device_id: SIM-HA-002, start_min: 300,  duration_min: 18}
+  - {scenario: door_left_open,     device_id: SIM-FB-002, start_min: 900,  duration_min: 14}
+  - {scenario: compressor_failure, device_id: SIM-HA-001, start_min: 420}
+  - {scenario: compressor_failure, device_id: SIM-FB-004, start_min: 780}
+  - {scenario: compressor_failure, device_id: SIM-LC-001, start_min: 1080}
+  - {scenario: node_offline,       device_id: SIM-HA-003, start_min: 600,  duration_min: 25}
+  - {scenario: node_offline,       device_id: SIM-LC-002, start_min: 1200, duration_min: 30}
+  - {scenario: power_outage,       device_id: SIM-FB-001, start_min: 240,  duration_min: 120}
+  - {scenario: power_outage,       device_id: SIM-HA-004, start_min: 1000, duration_min: 130}
+  - {scenario: low_battery,        device_id: SIM-FB-003, start_min: 660,  duration_min: 110}
+
+# Eventos benignos generados de forma determinista (algoritmo en docs/simulator-design.md, sección 6).
+benign:
+  - scenario: door_open
+    count: 30
+    seed: 7
+    min_gap_min: 45
+    duration_s: [90, 105, 120, 135, 150]
+    peak_c: [3.0, 4.0]

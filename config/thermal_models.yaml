@@ -1,0 +1,56 @@
+# Parámetros del modelo térmico del simulador (docs/simulator-design.md, sección 4).
+# Valores calibrados con un prototipo de referencia; cámbialos solo junto con los tests de firma.
+version: 1
+
+ambient:
+  mean_c: 22.0
+  daily_amplitude_c: 1.5
+  peak_hour_utc: 15
+
+# Bulto de aire que se calienta al abrir la puerta unos minutos (escenario door_open).
+door_open:
+  decay_tau_min: 2.0
+
+battery:
+  recharge_pct_per_min: 0.5
+
+rssi:
+  baseline_range_dbm: [-85, -60]
+  sigma_dbm: 2.0
+
+classes:
+  REFRIGERATED:
+    band_c: [3.5, 5.5]          # banda de control del compresor (dentro del rango 2–8 °C)
+    cool_c_per_min: 0.20
+    leak_per_min: 0.004
+    noise_sigma_c: 0.05
+    door_left_open_gain_c_per_min: 0.9
+    humidity: {mean_pct: 55.0, step_sigma: 0.3, min_pct: 40.0, max_pct: 70.0}
+  FROZEN:
+    band_c: [-22.0, -19.0]      # dentro de −25..−15 °C
+    cool_c_per_min: 0.25
+    leak_per_min: 0.0025
+    noise_sigma_c: 0.05
+    door_left_open_gain_c_per_min: 1.0
+    humidity: {mean_pct: 40.0, step_sigma: 0.3, min_pct: 30.0, max_pct: 50.0}
+  ULTRA_FROZEN:
+    band_c: [-84.0, -78.0]      # dentro de −90..−60 °C
+    cool_c_per_min: 0.35
+    leak_per_min: 0.0008
+    noise_sigma_c: 0.15
+    door_left_open_gain_c_per_min: 1.5
+    humidity: null              # las sondas de ultracongelación no miden humedad
+
+# Parámetros propios de cada escenario.
+scenarios:
+  power_outage:
+    battery_drain_pct_per_min: 0.8
+    cooling_lost: true          # sin red eléctrica el equipo también deja de enfriar
+  low_battery:
+    start_pct: 35.0
+    battery_drain_pct_per_min: 0.25
+  weak_signal:
+    mean_dbm: -108
+    sigma_dbm: 3.0
+  sensor_drift:
+    rate_c_per_min: 0.01

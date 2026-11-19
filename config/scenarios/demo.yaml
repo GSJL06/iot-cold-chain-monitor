@@ -1,0 +1,21 @@
+# Escenario de demostración en vivo: fallos visibles en los primeros 60 minutos.
+# Los minutos son relativos al momento de lanzar el simulador (con --backfill-hours, el histórico
+# previo es de funcionamiento normal). Úsalo para ver alertas en Grafana y en el log del motor.
+version: 1
+name: demo
+seed: 11
+duration_min: 240
+
+faults:
+  - {scenario: door_left_open,     device_id: SIM-HA-002, start_min: 10, duration_min: 16}
+  - {scenario: node_offline,       device_id: SIM-HA-003, start_min: 20, duration_min: 15}
+  - {scenario: compressor_failure, device_id: SIM-FB-004, start_min: 30}
+  - {scenario: weak_signal,        device_id: SIM-FB-001, start_min: 40, duration_min: 60}
+
+benign:
+  - scenario: door_open
+    count: 6
+    seed: 3
+    min_gap_min: 45
+    duration_s: [90, 120, 150]
+    peak_c: [3.0, 4.0]

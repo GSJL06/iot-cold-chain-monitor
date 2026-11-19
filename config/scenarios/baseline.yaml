@@ -1,0 +1,8 @@
+# Funcionamiento normal sin fallos ni eventos. Sirve para pruebas del ingestor y de la carga.
+version: 1
+name: baseline
+seed: 1
+duration_min: 1440
+
+faults: []
+benign: []
