@@ -183,16 +183,15 @@ def test_design_test_2_baseline(
     results = run_simulation(dev, duration_min=1440)
     temps = [s.temp_c for _, s in results]
 
-    assert all(
-        min_c <= t <= max_c for t in temps
-    ), f"Clase {storage_class} salió de rango: min={min(temps)}, max={max(temps)}"
+    in_range = all(min_c <= t <= max_c for t in temps)
+    msg_range = f"Clase {storage_class} salió de rango: min={min(temps)}, max={max(temps)}"
+    assert in_range, msg_range
 
     diffs = [round(abs(temps[i] - temps[i - 1]), 1) for i in range(1, len(temps))]
     max_diff = max(diffs)
     threshold = 0.9 * max_rate_c_per_min
-    assert (
-        max_diff < threshold
-    ), f"Clase {storage_class} excedió la tasa de cambio: {max_diff:.3f} >= {threshold:.3f}"
+    msg_rate = f"Clase {storage_class} excedió tasa: {max_diff:.3f} >= {threshold:.3f}"
+    assert max_diff < threshold, msg_rate
 
 
 def test_design_test_3_door_open():
@@ -226,9 +225,8 @@ def test_design_test_3_door_open():
             else:
                 consecutive_out = 0
 
-        assert (
-            max_consecutive_out <= 3
-        ), f"Semilla {seed}: fuera de rango {max_consecutive_out} min (> 3 min)"
+        msg = f"Semilla {seed}: fuera de rango {max_consecutive_out} min (> 3 min)"
+        assert max_consecutive_out <= 3, msg
 
 
 def test_design_test_4_door_left_open():
@@ -261,9 +259,8 @@ def test_design_test_4_door_left_open():
             else:
                 consecutive_out = 0
 
-        assert (
-            max_consecutive_out >= 15
-        ), f"Semilla {seed}: fuera de rango {max_consecutive_out} min (< 15 min)"
+        msg = f"Semilla {seed}: fuera de rango {max_consecutive_out} min (< 15 min)"
+        assert max_consecutive_out >= 15, msg
 
 
 def test_design_test_5_compressor_failure():
@@ -302,12 +299,10 @@ def test_design_test_5_compressor_failure():
                 if sample.temp_c > 8.0 or sample.temp_c < 2.0:
                     exit_delay = int(m - failure_start)
 
-        assert (
-            exit_delay is not None and 35 <= exit_delay <= 80
-        ), f"Semilla {seed}: retardo de salida fue {exit_delay} min (esperado entre 35 y 80 min)"
-        assert (
-            max_diff < 0.5
-        ), f"Semilla {seed}: variación máxima |ΔT| fue {max_diff:.3f} °C (esperado < 0.5 °C)"
+        msg_delay = f"Semilla {seed}: retardo {exit_delay} min (esperado entre 35 y 80 min)"
+        assert exit_delay is not None and 35 <= exit_delay <= 80, msg_delay
+        msg_diff = f"Semilla {seed}: |ΔT| máx fue {max_diff:.3f} °C (esperado < 0.5 °C)"
+        assert max_diff < 0.5, msg_diff
 
 
 def test_design_test_7_power_outage():
@@ -336,19 +331,16 @@ def test_design_test_7_power_outage():
         for m, (_, sample) in enumerate(results):
             is_during_outage = outage_start <= m < outage_start + outage_duration
             if is_during_outage:
-                assert (
-                    sample.on_backup_power is True
-                ), f"Semilla {seed}: en minuto {m} on_backup_power debió ser True"
+                msg_backup = f"Semilla {seed}: en minuto {m} on_backup_power debió ser True"
+                assert sample.on_backup_power is True, msg_backup
                 if sample.battery_pct < 20.0 and below_20_minute is None:
                     below_20_minute = int(m - outage_start)
             else:
-                assert (
-                    sample.on_backup_power is False
-                ), f"Semilla {seed}: en minuto {m} on_backup_power debió ser False"
+                msg_normal = f"Semilla {seed}: en minuto {m} on_backup_power debió ser False"
+                assert sample.on_backup_power is False, msg_normal
 
-        assert (
-            below_20_minute is not None and 90 <= below_20_minute <= 110
-        ), f"Semilla {seed}: batería < 20 % ocurrió al minuto {below_20_minute} (esperado 90-110)"
+        msg_drain = f"Semilla {seed}: batería < 20 % en min {below_20_minute} (esperado 90-110)"
+        assert below_20_minute is not None and 90 <= below_20_minute <= 110, msg_drain
 
 
 def test_design_test_8_low_battery():
@@ -375,16 +367,14 @@ def test_design_test_8_low_battery():
 
         below_20_minute: int | None = None
         for m, (_, sample) in enumerate(results):
-            assert (
-                sample.on_backup_power is False
-            ), f"Semilla {seed}: on_backup_power debe ser False durante low_battery (minuto {m})"
+            msg_bk = f"Semilla {seed}: on_backup_power debe ser False en minuto {m}"
+            assert sample.on_backup_power is False, msg_bk
             is_during_low = low_start <= m < low_start + low_duration
             if is_during_low and sample.battery_pct < 20.0 and below_20_minute is None:
                 below_20_minute = int(m - low_start)
 
-        assert (
-            below_20_minute is not None and 50 <= below_20_minute <= 70
-        ), f"Semilla {seed}: batería < 20 % ocurrió al minuto {below_20_minute} (esperado 50-70)"
+        msg_drain = f"Semilla {seed}: batería < 20 % en min {below_20_minute} (esperado 50-70)"
+        assert below_20_minute is not None and 50 <= below_20_minute <= 70, msg_drain
 
 
 def test_design_test_9_weak_signal():
@@ -415,6 +405,5 @@ def test_design_test_9_weak_signal():
                 rssi_history.append(sample.rssi_dbm)
                 if len(rssi_history) >= 5:
                     window_mean = sum(rssi_history[-5:]) / 5.0
-                    assert (
-                        window_mean < -100.0
-                    ), f"Semilla {seed}: media móvil RSSI {window_mean:.1f} no es < -100 dBm"
+                    msg = f"Semilla {seed}: media móvil {window_mean:.1f} no es < -100 dBm"
+                    assert window_mean < -100.0, msg
