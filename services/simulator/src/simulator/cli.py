@@ -4,13 +4,24 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import sys
-from datetime import timedelta
+import threading
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 from simulator.clock import parse_ts
-from simulator.config import load_catalog, load_fleet, load_plan, load_thermal, validate_plan
+from simulator.config import (
+    FleetCfg,
+    load_catalog,
+    load_fleet,
+    load_plan,
+    load_thermal,
+    validate_plan,
+)
 from simulator.fleet import Fleet
+from simulator.publisher import SimPublisher
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -61,12 +72,31 @@ def build_parser() -> argparse.ArgumentParser:
     # Subcomando: publish
     pub_parser = subparsers.add_parser(
         "publish",
-        help="Publica lecturas en vivo en el broker MQTT (no implementado en esta fase)",
+        help="Publica telemetría en tiempo real hacia el broker MQTT",
     )
-    pub_parser.add_argument("--scenario", required=False)
-    pub_parser.add_argument("--backfill-hours", type=int, default=0)
-    pub_parser.add_argument("--period-s", type=int, default=60)
-    pub_parser.add_argument("--seed", type=int, default=None)
+    pub_parser.add_argument(
+        "--scenario",
+        required=True,
+        help="Ruta al archivo YAML del escenario a simular",
+    )
+    pub_parser.add_argument(
+        "--backfill-hours",
+        type=int,
+        default=0,
+        help="Horas de histórico normal previo para publicar en modo acelerado (por defecto 0)",
+    )
+    pub_parser.add_argument(
+        "--period-s",
+        type=int,
+        default=None,
+        help="Periodo de telemetría en segundos (sustituye al de fleet.yaml; debe ser >= 1)",
+    )
+    pub_parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Semilla pseudoaleatoria (sustituye a la del plan si se especifica)",
+    )
 
     return parser
 
@@ -77,8 +107,70 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.subcommand == "publish":
-        print("publish: no implementado (fase 4B, prompt B3)")
-        return 2
+        password = os.environ.get("MQTT_DEVICE_PASSWORD")
+        if not password:
+            sys.stderr.write(
+                "Error: falta la variable de entorno obligatoria MQTT_DEVICE_PASSWORD\n"
+            )
+            return 1
+
+        host = os.environ.get("MQTT_HOST", "localhost")
+        try:
+            port = int(os.environ.get("MQTT_PORT", "1883"))
+        except ValueError:
+            sys.stderr.write("Error: MQTT_PORT debe ser un entero válido\n")
+            return 1
+
+        if args.backfill_hours < 0:
+            sys.stderr.write("Error: --backfill-hours debe ser >= 0\n")
+            return 1
+
+        if args.period_s is not None and args.period_s < 1:
+            sys.stderr.write("Error: --period-s debe ser un entero >= 1\n")
+            return 1
+
+        config_dir = Path(args.config_dir)
+        fleet_cfg = load_fleet(config_dir / "fleet.yaml")
+        thermal_cfg = load_thermal(config_dir / "thermal_models.yaml")
+        catalog = load_catalog(config_dir / "scenario_catalog.yaml")
+        plan = load_plan(args.scenario)
+        validate_plan(plan, fleet_cfg, catalog)
+
+        if args.period_s is not None:
+            fleet_cfg = FleetCfg(
+                period_s=args.period_s,
+                firmware=fleet_cfg.firmware,
+                phase_step_s=fleet_cfg.phase_step_s,
+                devices=fleet_cfg.devices,
+            )
+
+        stop_event = threading.Event()
+
+        def _handle_signal(signum: int, frame: Any) -> None:
+            stop_event.set()
+
+        signal.signal(signal.SIGINT, _handle_signal)
+        if hasattr(signal, "SIGTERM"):
+            signal.signal(signal.SIGTERM, _handle_signal)
+
+        now_start = datetime.now(UTC).replace(microsecond=0)
+        fleet = Fleet(
+            fleet_cfg=fleet_cfg,
+            thermal_cfg=thermal_cfg,
+            catalog=catalog,
+            plan=plan,
+            start_ts=now_start,
+            seed=args.seed,
+        )
+
+        publisher = SimPublisher(
+            fleet=fleet,
+            host=host,
+            port=port,
+            password=password,
+        )
+        publisher.run(backfill_hours=args.backfill_hours, stop_event=stop_event)
+        return 0
 
     if args.subcommand == "generate":
         config_dir = Path(args.config_dir)

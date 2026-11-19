@@ -34,10 +34,10 @@ def test_design_test_10_plan_24h_invariants():
     real_faults = [e for e in truth if e["class"] == "real_fault"]
     door_opens = [e for e in truth if e["scenario"] == "door_open"]
 
-    assert len(real_faults) == 10, f"Se esperaban 10 fallos reales, obtenidos: {len(real_faults)}"
-    assert (
-        len(door_opens) == 30
-    ), f"Se esperaban 30 aperturas benignas, obtenidas: {len(door_opens)}"
+    msg_real = f"Se esperaban 10 fallos reales, obtenidos: {len(real_faults)}"
+    assert len(real_faults) == 10, msg_real
+    msg_door = f"Se esperaban 30 aperturas benignas, obtenidas: {len(door_opens)}"
+    assert len(door_opens) == 30, msg_door
 
     # 2. Ventanas bloqueadas por dispositivo: [inicio - 10, fin + margin_min]
     fault_events = [e for e in events if catalog[e.scenario].scenario_class == "real_fault"]

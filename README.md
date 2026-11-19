@@ -64,6 +64,8 @@ Próximamente (Fase 4).
 ## Documentación
 
 - [Arquitectura](docs/architecture.md)
+- [Diseño del simulador](docs/simulator-design.md)
+- [Simulador (servicio)](services/simulator/README.md)
 - [Stack tecnológico](docs/stack.md)
 - [Versiones fijadas](docs/versions.md)
 - [Contrato MQTT](docs/mqtt-contract.md)

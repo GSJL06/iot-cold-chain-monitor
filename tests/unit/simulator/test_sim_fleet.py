@@ -104,9 +104,8 @@ def test_design_test_6_node_offline():
     offline_end_ts = FIXED_START_TS + timedelta(minutes=625)
 
     during_offline = [r for r in ha003_readings if offline_start_ts <= r.ts < offline_end_ts]
-    assert (
-        len(during_offline) == 0
-    ), f"Se emitieron {len(during_offline)} lecturas durante node_offline"
+    msg_offline = f"Se emitieron {len(during_offline)} lecturas durante node_offline"
+    assert len(during_offline) == 0, msg_offline
 
     before_offline = [r for r in ha003_readings if r.ts < offline_start_ts]
     after_offline = [r for r in ha003_readings if r.ts >= offline_end_ts]
@@ -117,9 +116,8 @@ def test_design_test_6_node_offline():
     last_before_seq = before_offline[-1].seq
     first_after_seq = after_offline[0].seq
 
-    assert (
-        first_after_seq == last_before_seq + 1
-    ), f"seq no es contiguo: antes={last_before_seq}, después={first_after_seq}"
+    msg_seq = f"seq no es contiguo: antes={last_before_seq}, después={first_after_seq}"
+    assert first_after_seq == last_before_seq + 1, msg_seq
 
 
 def test_design_test_11_contract_schema_validation():
