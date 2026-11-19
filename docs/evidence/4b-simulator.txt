@@ -1,0 +1,29 @@
+Monitoreando telemetr├¡a durante 300 segundos...
+
+=======================================================
+Dispositivo      Mensajes   Esperados    Estado
+-------------------------------------------------------
+SIM-FB-001       5          5            OK
+SIM-FB-002       5          5            OK
+SIM-FB-003       5          5            OK
+SIM-FB-004       5          5            OK
+SIM-HA-001       5          5            OK
+SIM-HA-002       5          5            OK
+SIM-HA-003       5          5            OK
+SIM-HA-004       5          5            OK
+SIM-LC-001       5          5            OK
+SIM-LC-002       5          5            OK
+SIM-LC-003       5          5            OK
+SIM-LC-004       5          5            OK
+-------------------------------------------------------
+Total dispositivos: 12 (esperados 12)
+Payloads inv├ílidos: 0
+RESULTADO: PASS
+
+## generate validation_24h (2 ejecuciones)
+Lecturas generadas: 17225
+Eventos ground truth: real_fault=10, benign=30, diagnostic=0, limitation=0
+SHA-256 (out/validation_24h.jsonl): 1750d10bee85b1d32cb1cffb73f233faf3a926a45f300d7e3bb15ef348c960f2
+Lecturas generadas: 17225
+Eventos ground truth: real_fault=10, benign=30, diagnostic=0, limitation=0
+SHA-256 (out/validation_24h_b.jsonl): 1750d10bee85b1d32cb1cffb73f233faf3a926a45f300d7e3bb15ef348c960f2
