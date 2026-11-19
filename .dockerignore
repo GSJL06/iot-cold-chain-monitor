@@ -1,0 +1,11 @@
+.git
+.venv
+.env
+out/
+tests/
+docs/
+__pycache__/
+*.pyc
+infra/mosquitto/passwd
+.pytest_cache/
+.ruff_cache/

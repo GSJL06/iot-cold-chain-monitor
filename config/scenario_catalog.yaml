@@ -1,0 +1,66 @@
+# Catálogo de escenarios y su verdad de referencia (ground truth).
+# Trazabilidad con docs/alert-rules.md, sección 4. El motor de alertas se evalúa contra este catálogo.
+version: 1
+
+# class: real_fault | benign | diagnostic | limitation
+# expected_rules: reglas que deben abrirse por este escenario
+# forbidden_rules: reglas que NO deben abrirse
+# allowed_rules: reglas adicionales que son consecuencia legítima del mismo fallo
+# margin_min: minutos tras el fin del escenario en los que una alerta sigue contando como suya
+scenarios:
+  door_open:
+    class: benign
+    expected_rules: [R02]
+    forbidden_rules: [R01]
+    allowed_rules: []
+    margin_min: 10
+    applicable_classes: [REFRIGERATED, FROZEN, ULTRA_FROZEN]
+  door_left_open:
+    class: real_fault
+    expected_rules: [R01]
+    forbidden_rules: []
+    allowed_rules: [R02]
+    margin_min: 90
+    applicable_classes: [REFRIGERATED, FROZEN]
+  compressor_failure:
+    class: real_fault
+    expected_rules: [R01]
+    forbidden_rules: [R03]
+    allowed_rules: []
+    margin_min: 0               # sin fin: cuenta hasta el final de la simulación
+    applicable_classes: [REFRIGERATED, FROZEN]
+  node_offline:
+    class: real_fault
+    expected_rules: [R03]
+    forbidden_rules: [R01]
+    allowed_rules: []
+    margin_min: 10
+    applicable_classes: [REFRIGERATED, FROZEN, ULTRA_FROZEN]
+  power_outage:
+    class: real_fault
+    expected_rules: [R05, R04]
+    forbidden_rules: []
+    allowed_rules: [R01]        # en un corte real la nevera también pierde frío
+    margin_min: 120
+    applicable_classes: [REFRIGERATED, FROZEN]
+  low_battery:
+    class: real_fault
+    expected_rules: [R04]
+    forbidden_rules: [R05]
+    allowed_rules: []
+    margin_min: 60
+    applicable_classes: [REFRIGERATED, FROZEN, ULTRA_FROZEN]
+  weak_signal:
+    class: diagnostic
+    expected_rules: [R06]
+    forbidden_rules: []
+    allowed_rules: []
+    margin_min: 30
+    applicable_classes: [REFRIGERATED, FROZEN, ULTRA_FROZEN]
+  sensor_drift:
+    class: limitation           # ninguna regla v1 la detecta; la cubre analytics en parte
+    expected_rules: []
+    forbidden_rules: []
+    allowed_rules: []
+    margin_min: 0
+    applicable_classes: [REFRIGERATED, FROZEN, ULTRA_FROZEN]

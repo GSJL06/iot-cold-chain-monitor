@@ -1,0 +1,8 @@
+"""Punto de ejecución como módulo: python -m simulator."""
+
+import sys
+
+from simulator.cli import main
+
+if __name__ == "__main__":
+    sys.exit(main())

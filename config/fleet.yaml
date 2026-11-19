@@ -1,0 +1,20 @@
+# Flota sintética del simulador. Debe coincidir con infra/timescaledb/init/003_seed.sql
+# (un test lo comprueba: tests/unit/simulator/test_sim_config.py).
+version: 1
+period_s: 60              # periodo de telemetría (docs/mqtt-contract.md, sección 2)
+firmware: sim-1.0.0
+phase_step_s: 5           # desfase entre dispositivos para no publicar los 12 a la vez
+
+devices:
+  - {device_id: SIM-HA-001, site_id: hosp-a, storage_class: REFRIGERATED}
+  - {device_id: SIM-HA-002, site_id: hosp-a, storage_class: REFRIGERATED}
+  - {device_id: SIM-HA-003, site_id: hosp-a, storage_class: REFRIGERATED}
+  - {device_id: SIM-HA-004, site_id: hosp-a, storage_class: FROZEN}
+  - {device_id: SIM-FB-001, site_id: farm-b, storage_class: REFRIGERATED}
+  - {device_id: SIM-FB-002, site_id: farm-b, storage_class: REFRIGERATED}
+  - {device_id: SIM-FB-003, site_id: farm-b, storage_class: REFRIGERATED}
+  - {device_id: SIM-FB-004, site_id: farm-b, storage_class: FROZEN}
+  - {device_id: SIM-LC-001, site_id: lab-c, storage_class: REFRIGERATED}
+  - {device_id: SIM-LC-002, site_id: lab-c, storage_class: FROZEN}
+  - {device_id: SIM-LC-003, site_id: lab-c, storage_class: ULTRA_FROZEN}
+  - {device_id: SIM-LC-004, site_id: lab-c, storage_class: ULTRA_FROZEN}
