@@ -271,12 +271,12 @@ def test_publisher_lifecycle_and_invariants() -> None:
     live_telemetry = [m for _, m in telemetry_publishes if m.data["ts"] >= anchor_iso]
 
     # 12 dispositivos * 60 minutos de backfill = 720 lecturas de backfill
-    assert (
-        len(backfill_telemetry) == 720
-    ), f"Esperadas 720 lecturas en backfill, obtenidas: {len(backfill_telemetry)}"
-    assert (
-        len(live_telemetry) >= 12
-    ), f"Esperadas al menos 12 lecturas en directo, obtenidas: {len(live_telemetry)}"
+    assert len(backfill_telemetry) == 720, (
+        f"Esperadas 720 lecturas en backfill, obtenidas: {len(backfill_telemetry)}"
+    )
+    assert len(live_telemetry) >= 12, (
+        f"Esperadas al menos 12 lecturas en directo, obtenidas: {len(live_telemetry)}"
+    )
 
     # Las primeras 720 telemetrías deben ser estrictamente < anchor_iso
     for i in range(720):
