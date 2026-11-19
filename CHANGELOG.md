@@ -9,6 +9,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 - Fase 4A: infraestructura base (Mosquitto con ACL, TimescaleDB con esquema, roles y flota sintética), plan MVP y verificador del broker.
 - Fase 4B: simulador determinista (modelo térmico, 8 escenarios, plan de validación de 24 h con ground truth), publicación MQTT con backfill y servicio en Compose.
+- Fase 4A: verificada la suscripción compartida `$share` en Mosquitto 2.0.23 (6/6 PASS, `docs/evidence/4a-verify-broker.txt`); ADR 0004 actualizada con el resultado.
 
 ### Added
 
