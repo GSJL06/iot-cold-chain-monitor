@@ -1,0 +1,38 @@
+## verify_ingestor
+PASS a_dedup_valid_reading: 1 fila en readings
+PASS b_schema_invalid: reason=schema_invalid
+PASS c_unsupported_schema: reason=unsupported_schema
+PASS d_topic_mismatch: reason=topic_mismatch
+PASS e_clock_skew: reason=clock_skew
+5/5 PASS
+
+## reinicio del ingestor (parado 45 s con el simulador en marcha)
+Desfase de reloj (BD - local): +1.7 ms
+Retraso de ingesti├│n: 4.290 s (├║ltima: 2026-11-26 23:43:30.324624+00:00)
+Latencia p95 (├║ltimos 5 min, lecturas=720): 33.331 s
+Huecos de seq (├║ltimos 5 min, total=0):
+  (sin huecos)
+Rechazos por motivo (├║ltimos 5 min):
+  (sin rechazos)
+Estado de dispositivos:
+  SIM-FB-001   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-FB-002   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-FB-003   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-FB-004   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-HA-001   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-HA-002   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-HA-003   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-HA-004   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-LC-001   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-LC-002   state=online   last_seen=2026-11-26 23:43:30.324624+00:00
+  SIM-LC-003   state=online   last_seen=2026-11-26 23:43:30.067092+00:00
+  SIM-LC-004   state=online   last_seen=2026-11-26 23:43:30.324624+00:00
+
+## load_test 20 msg/s, 60 s
+Enviados: 1200
+Almacenados: 1200
+Perdidos: 0
+Latencia p95: 0.257 s
+Desfase de reloj: +0.6 ms
+RESULTADO: PASS
+Limpieza (admin): DELETE FROM readings WHERE seq >= 1000000000;

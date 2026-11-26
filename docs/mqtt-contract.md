@@ -69,7 +69,7 @@ El schema es estricto (`additionalProperties: false`). Cualquier campo nuevo imp
 }
 ```
 
-`state` es `online` u `offline`. Su schema formal llega con el `ingestor` (Fase 4).
+`state` es `online` u `offline`. Schema formal: `schemas/status.v1.schema.json`. El ingestor aplica los mensajes `status` en orden de llegada y guarda `ts` en `device_status.last_status_ts` solo como dato informativo, porque el `ts` del LWT es el de la conexión y no el de la caída.
 
 ## 5. Validaciones del ingestor
 
@@ -83,7 +83,7 @@ El `ingestor` rechaza el mensaje y lo guarda en `rejected_messages` con el motiv
 | `unknown_device` | `device_id` no existe en `devices` |
 | `clock_skew` | `ts` más de 5 min en el futuro respecto a la hora del servidor |
 
-Duplicados: la clave `(device_id, ts)` absorbe reenvíos de QoS 1 con `ON CONFLICT DO NOTHING`.
+Orden de evaluación (gana el primer motivo que aplica): topic mal formado (`topic_mismatch`), payload mayor de 4096 bytes, no JSON o con `NaN` o `Infinity` (`schema_invalid`), `schema` distinto del esperado (`unsupported_schema`), incumplimiento del schema o `seq` mayor de 2147483647 (`schema_invalid`), `device_id` distinto del topic (`topic_mismatch`), dispositivo desconocido (`unknown_device`), `ts` futuro (`clock_skew`). Los mismos motivos y orden valen para `status.v1`. Duplicados: la clave `(device_id, ts)` absorbe reenvíos de QoS 1 con `ON CONFLICT DO NOTHING`.
 
 ## 6. Prueba manual (Fase 4)
 

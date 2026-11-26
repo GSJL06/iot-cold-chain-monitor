@@ -66,6 +66,8 @@ Próximamente (Fase 4).
 - [Arquitectura](docs/architecture.md)
 - [Diseño del simulador](docs/simulator-design.md)
 - [Simulador (servicio)](services/simulator/README.md)
+- [Diseño del ingestor](docs/ingestor-design.md)
+- [Ingestor (servicio)](services/ingestor/README.md)
 - [Stack tecnológico](docs/stack.md)
 - [Versiones fijadas](docs/versions.md)
 - [Contrato MQTT](docs/mqtt-contract.md)

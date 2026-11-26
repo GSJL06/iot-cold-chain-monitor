@@ -56,6 +56,42 @@ services:
       retries: 6
       start_period: 10s
 
+  ingestor:
+    build:
+      context: .
+      dockerfile: services/ingestor/Dockerfile
+    image: coldchain-ingestor:dev
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      MQTT_INGESTOR_PASSWORD: ${MQTT_INGESTOR_PASSWORD:?falta MQTT_INGESTOR_PASSWORD en .env}
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:?falta POSTGRES_DB en .env}
+      INGESTOR_DB_PASSWORD: ${INGESTOR_DB_PASSWORD:?falta INGESTOR_DB_PASSWORD en .env}
+      INGESTOR_ID: ingestor
+      MQTT_SHARED_GROUP: ${MQTT_SHARED_GROUP-ingestor}
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+    stop_grace_period: 20s
+    healthcheck:
+      test: ["CMD", "python", "-m", "ingestor.health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
   simulator:
     profiles: ["sim"]
     build:
