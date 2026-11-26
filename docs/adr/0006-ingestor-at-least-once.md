@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Estado | Aceptada, con una condición abierta (ver "Verificación pendiente") |
+| Estado | Aceptada |
 | Fecha | 2026-11-26 |
 | Relacionada | ADR 0001, ADR 0004, `docs/ingestor-design.md`, `docs/mqtt-contract.md` |
 
@@ -27,12 +27,12 @@ Con la confirmación automática de paho, el `PUBACK` sale al volver de `on_mess
 11. **Esquema formal de `status.v1`** (`schemas/status.v1.schema.json`) con sus ejemplos y pruebas de contrato.
 12. **Latido en fichero** (`/tmp/ingestor.alive`) para el `healthcheck` de Docker, porque el servicio no expone HTTP.
 
-## Verificación pendiente
+## Verificación (resuelta en 4C)
 
 Mosquitto 2.0.23 podría no encolar mensajes de una suscripción compartida para un miembro desconectado con sesión persistente. La prueba de reinicio de la Fase 4C lo mide (0 huecos de `seq`).
 
-- Si pasa: se mantiene el contrato MQTT v1 tal como está.
-- Si falla: plan B, `MQTT_SHARED_GROUP=` vacío para usar suscripción normal con una sola instancia. Es un cambio de configuración; se actualizan `docs/mqtt-contract.md` (sección 2) y esta ADR.
+- Resultado: pasó (0 huecos de `seq` tras parar el ingestor 45 s, evidencia en `docs/evidence/4c-ingestor.txt`). Se mantiene el contrato MQTT v1 tal como está.
+- Plan B (`MQTT_SHARED_GROUP=` vacío): no fue necesario.
 
 ## Consecuencias
 
