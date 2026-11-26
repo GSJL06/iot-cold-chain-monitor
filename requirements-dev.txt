@@ -1,6 +1,6 @@
 pytest>=9.0.3,<10
 jsonschema>=4.23,<5
-ruff==0.17.5
+ruff==0.17.6
 pre-commit>=4,<5
 pytest-cov>=6,<7
 pip-audit>=2.7,<3
